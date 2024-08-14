@@ -45,7 +45,7 @@
 
 static ULONG cdc_acm_interface_number;
 static ULONG cdc_acm_configuration_number;
-static UX_SLAVE_CLASS_CDC_ACM_PARAMETER cdc_acm_parameter;
+static UX_SLAVE_CLASS_CDC_ACM_PARAMETER cdc_acm_parameter_1, cdc_acm_parameter_2;
 static TX_THREAD ux_device_app_thread;
 
 /* USER CODE BEGIN PV */
@@ -133,9 +133,9 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   }
 
   /* Initialize the cdc acm class parameters for the device */
-  cdc_acm_parameter.ux_slave_class_cdc_acm_instance_activate   = USBD_CDC_ACM_Activate;
-  cdc_acm_parameter.ux_slave_class_cdc_acm_instance_deactivate = USBD_CDC_ACM_Deactivate;
-  cdc_acm_parameter.ux_slave_class_cdc_acm_parameter_change    = USBD_CDC_ACM_ParameterChange;
+  cdc_acm_parameter_1.ux_slave_class_cdc_acm_instance_activate   = USBD_CDC_ACM_Activate_1;
+  cdc_acm_parameter_1.ux_slave_class_cdc_acm_instance_deactivate = USBD_CDC_ACM_Deactivate_1;
+  cdc_acm_parameter_1.ux_slave_class_cdc_acm_parameter_change    = USBD_CDC_ACM_ParameterChange_1;
 
   /* USER CODE BEGIN CDC_ACM_PARAMETER */
 
@@ -148,11 +148,33 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   cdc_acm_interface_number = USBD_Get_Interface_Number(CLASS_TYPE_CDC_ACM, 0);
 
   /* Initialize the device cdc acm class */
-  if (ux_device_stack_class_register(_ux_system_slave_class_cdc_acm_name,
+  if (ux_device_stack_class_register("ACM1",
                                      ux_device_class_cdc_acm_entry,
                                      cdc_acm_configuration_number,
                                      cdc_acm_interface_number,
-                                     &cdc_acm_parameter) != UX_SUCCESS)
+                                     &cdc_acm_parameter_1) != UX_SUCCESS)
+  {
+    /* USER CODE BEGIN USBX_DEVICE_CDC_ACM_REGISTER_ERORR */
+    return UX_ERROR;
+    /* USER CODE END USBX_DEVICE_CDC_ACM_REGISTER_ERORR */
+  }
+
+  /* Initialize the cdc acm class parameters for the device */
+  cdc_acm_parameter_2.ux_slave_class_cdc_acm_instance_activate   = USBD_CDC_ACM_Activate_2;
+  cdc_acm_parameter_2.ux_slave_class_cdc_acm_instance_deactivate = USBD_CDC_ACM_Deactivate_2;
+  cdc_acm_parameter_2.ux_slave_class_cdc_acm_parameter_change    = USBD_CDC_ACM_ParameterChange_2;
+
+  cdc_acm_configuration_number = USBD_Get_Configuration_Number(CLASS_TYPE_CDC_ACM, 0);
+
+  /* Find cdc acm interface number */
+  cdc_acm_interface_number = USBD_Get_Interface_Number(CLASS_TYPE_CDC_ACM, 2);
+
+  /* Initialize the device cdc acm class */
+  if (ux_device_stack_class_register("ACM2",
+                                     ux_device_class_cdc_acm_entry,
+                                     cdc_acm_configuration_number,
+                                     cdc_acm_interface_number,
+                                     &cdc_acm_parameter_2) != UX_SUCCESS)
   {
     /* USER CODE BEGIN USBX_DEVICE_CDC_ACM_REGISTER_ERORR */
     return UX_ERROR;
@@ -259,13 +281,13 @@ VOID USBX_APP_Device_Init(VOID)
   HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_HS, 0x200);
 
   /* Set Tx FIFO 0 */
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 0, 0x20);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 0, 0x40);
 
   /* Set Tx FIFO 2 */
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 1, 0x20);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 1, 0x40);
 
   /* Set Tx FIFO 3 */
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 2, 0x20);
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 2, 0x40);
   /* USER CODE END USB_Device_Init_PreTreatment_1 */
 
   /* Initialize and link controller HAL driver */

@@ -50,10 +50,13 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-VOID USBD_CDC_ACM_Activate(VOID *cdc_acm_instance);
-VOID USBD_CDC_ACM_Deactivate(VOID *cdc_acm_instance);
-VOID USBD_CDC_ACM_ParameterChange(VOID *cdc_acm_instance);
+VOID USBD_CDC_ACM_Activate_1(VOID* cdc_acm_instance);
+VOID USBD_CDC_ACM_Deactivate_1(VOID* cdc_acm_instance);
+VOID USBD_CDC_ACM_ParameterChange_1(VOID* cdc_acm_instance);
 
+VOID USBD_CDC_ACM_Activate_2(VOID* cdc_acm_instance);
+VOID USBD_CDC_ACM_Deactivate_2(VOID* cdc_acm_instance);
+VOID USBD_CDC_ACM_ParameterChange_2(VOID* cdc_acm_instance);
 /* USER CODE BEGIN EFP */
 VOID usbx_cdc_acm_read_thread_entry(ULONG thread_input);
 VOID usbx_cdc_acm_write_thread_entry(ULONG thread_input);
